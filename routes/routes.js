@@ -295,12 +295,13 @@ router.route('/updatebalvidya').post(balVidyaController.updateBalVidya);
 router.route('/getbalvidya').post(balVidyaController.getBalVidyaById);
 router.route('/deletebalvidya').post(balVidyaController.deleteBalVidya);
 
-// router.route('/getBalVidyaPlans').get(balVidyaSubscriptionController.getAllBalVidyaPlans);
-// router.route('/createBalVidyaSubscription').post(balVidyaSubscriptionController.createSubscription);
-// router.route('/addSubscription').post(balVidyaSubscriptionController.addSubscription);
-// router.route('/getSubscriptionDetails').post(balVidyaSubscriptionController.getSubscriptionDetails);
-// router.route('/cancelSubscription').post(balVidyaSubscriptionController.cancelSubscription);
-// router.route('/updateSubscription').post(balVidyaSubscriptionController.updateSubscription);
+router.route('/getBalVidyaPlans').get(balVidyaSubscriptionController.getAllBalVidyaPlans);
+router.route('/createBalVidyaSubscription').post(balVidyaSubscriptionController.createSubscription);
+router.route('/addSubscription').post(balVidyaSubscriptionController.addSubscription);
+router.route('/verifySubscription').get(balVidyaSubscriptionController.verifySubscription);
+router.route('/getSubscriptionDetails').post(balVidyaSubscriptionController.getSubscriptionDetails);
+router.route('/cancelSubscription').post(balVidyaSubscriptionController.cancelSubscription);
+router.route('/updateSubscription').post(balVidyaSubscriptionController.updateSubscription);
 
 
 
@@ -396,7 +397,7 @@ router.route('/getcart').get(cartController.getCartItems);
 router.route('/addbookmark').post(bookMarkController.addBookMark); 
 router.route('/deletebookmark').post(bookMarkController.deleteBookMark);
 router.route('/getbookmark').get(bookMarkController.getBookMarks);
-
+router.route('/checkbookmark').post(bookMarkController.checkBookmark);
 
 
 //////////////////WithDrawal Route///////////////

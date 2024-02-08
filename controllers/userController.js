@@ -642,7 +642,7 @@ module.exports = {
             var seconds = date_ob.getSeconds();
             var time = hours + ":" + minutes + ":" + seconds;
             request.get('http://api.panchang.click/v0.4/panchangapi?date='+date+'&time='+time+'&tz=5.5&userid=jinendr&authcode=94a3c560d624bea016680336a4d2d20b', function (error, response, body) {
-                if(!error){
+                if(!error){ 
                     res.status(200).json({success : true, message: body})
                 }
                 else{

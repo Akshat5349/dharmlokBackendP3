@@ -17,7 +17,15 @@ const orderSchema = new mongoose.Schema({
 		required: false,
 		type: String,
 	},
+	bookingDate : {
+		required: false,
+		type: Date
+	},
 	providerId : {
+		required: false,
+		type: String,
+	},
+	customer : {
 		required: false,
 		type: String,
 	},

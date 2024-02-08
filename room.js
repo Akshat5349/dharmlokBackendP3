@@ -53,7 +53,11 @@ module.exports=class Room{
       const webRtcTransport_options={
         listenIps:[
           {
-            ip: '127.0.0.1'
+            // For local Servers
+            // ip: '127.0.0.1' 
+
+            // To stream on aws server
+            ip: '0.0.0.0' , announcedIp : '50.19.104.238'
           }
         ],
         enableUdp: true,

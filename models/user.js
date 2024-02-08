@@ -108,16 +108,6 @@ const userSchema = new mongoose.Schema({
 		type:String,
 		default: "none"
 	},
-	bookAccess :{
-		required : false,
-		type:Boolean,
-		default : false 
-	},
-	videoAccess :{
-		required : false,
-		type:Boolean,
-		default : false 
-	},
 	createdAt:{
 		type: Date,
 		default: Date.now()

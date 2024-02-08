@@ -15,8 +15,8 @@ const couponModel = require('../models/couponModel');
 const couponLogModel = require('../models/couponLogModel');
 
 var razorpayInstance = new Razorpay({
-    key_id: "rzp_test_CjE6dleliI5tcb",
-    key_secret: "4XgGfyyMkzYHV8QJdXHcCmBt"
+    key_id: "rzp_live_NHlvgq2xKtPVa0",
+    key_secret: "EEGH15M85zSA5iuZtFmo4Jig"
 });
 
 function getUniqueListBy(arr, key) {
@@ -241,22 +241,37 @@ module.exports = {
     createServiceOrder : async function(req, res){
         try{
             jwt.verify(req.headers.token, 'bootspider', async function(err, user){
+                console.log(req.body);
                 if (err) res.status(400).json({success : false,message: err.message});
                 else{
-                    const service = await serviceModel.findOne({_id : req.body.id}).select("price").select("services").select('userId');
-                        var amount = service.price * 100 * req.body.quantity;
+                    const service = await serviceModel.findOne({_id : req.body.serviceId}).select("price").select("services").select('userId');
+                        var amount = service.price * 100;
                         var services = service.services
                         var serviceProviderUserId = service.userId
                         var currency = 'INR'
+                        var cust={
+                            id : req.body.customerId,
+                            name : req.body.name,
+                            address : req.body.address,
+                            city : req.body.city,
+                            state : req.body.state,
+                            country : req.body.country,
+                            pincode : req.body.pincode,
+                            email : req.body.email,
+                            phone : req.body.phone,
+
+                        }
                         await razorpayInstance.orders.create({amount, currency}, 
                         async (error, odr)=>{
                             if(!err){
                                 let orderDet = new orderModel({
                                     userId : user.id,
                                     orderId : odr.id,
-                                    id : req.body.id,
+                                    id : req.body.serviceId,
                                     title : services,
                                     amount : amount,
+                                    bookingDate : req.body.date,
+                                    customer : JSON.stringify(cust),
                                     type : 'service',
                                     providerId : serviceProviderUserId
                                 })
@@ -281,7 +296,7 @@ module.exports = {
                     let orderId = req.body.orderId;
                     let paymentId = req.body.paymentId;
                     let signature = req.body.signature;
-                    let hmac = crypto.createHmac('sha256', '4XgGfyyMkzYHV8QJdXHcCmBt');
+                    let hmac = crypto.createHmac('sha256', 'EEGH15M85zSA5iuZtFmo4Jig');
                     hmac.update(orderId + "|" + paymentId);
                     const generated_signature = hmac.digest('hex');
                     if (generated_signature === signature) {
