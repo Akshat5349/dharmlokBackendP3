@@ -157,29 +157,29 @@ module.exports = {
           .select("subscription").select("plan_id");
           subscriptionDetails = { ...subscriptionDetails }._doc;
           
-          res.status(200).json({success: false,message: {canAccess: true}});
-        // if(subscriptionDetails.subscription=='none'){
-        //   res.status(200).json({success: false,message: {canAccess: false}});
-        // }
-        // else{
+          // res.status(200).json({success: false,message: {canAccess: true}});
+        if(subscriptionDetails.subscription=='none'){
+          res.status(200).json({success: false,message: {canAccess: false}});
+        }
+        else{
 
-        //   data= await instance.subscriptions.fetch(subscriptionDetails.subscription);
-        //   console.log('here');
-        //   if(data.status=='active'){
-        //     res.status(200).json({success: false,message: {canAccess: true}});
-        //   }
-        //   else{
-        //     if (data.status=='completed') {
-        //       if( Date.now()<data.end_at){
-        //         res.status(200).json({success: false,message: {canAccess: true}});
+          data= await instance.subscriptions.fetch(subscriptionDetails.subscription);
+          console.log('here');
+          if(data.status=='active'){
+            res.status(200).json({success: false,message: {canAccess: true}});
+          }
+          else{
+            if (data.status=='completed') {
+              if( Date.now()<data.end_at){
+                res.status(200).json({success: false,message: {canAccess: true}});
                 
-        //       }
-        //       else{
-        //         res.status(200).json({success: false,message: {canAccess: false}});
-        //       }
-        //     }
-        //   }
-        // }
+              }
+              else{
+                res.status(200).json({success: false,message: {canAccess: false}});
+              }
+            }
+          }
+        }
 
       });
     } catch (error) {
@@ -225,8 +225,6 @@ module.exports = {
         });
         subscriptionDetails = {
           plan_id: req.body.plan_id,
-          bookAccess: currPlan.books,
-          videoAccess: currPlan.video,
         };
         data = await userModel.findOneAndUpdate(
           { _id: user.id },
