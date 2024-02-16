@@ -637,13 +637,44 @@ module.exports = {
             var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
             var year = date_ob.getFullYear();  
             var date = day + "/" + month + "/" + year;
-            var hours = date_ob.getHours();
-            var minutes = date_ob.getMinutes();
-            var seconds = date_ob.getSeconds();
-            var time = hours + ":" + minutes + ":" + seconds;
-            request.get('http://api.panchang.click/v0.4/panchangapi?date='+date+'&time='+time+'&tz=5.5&userid=jinendr&authcode=94a3c560d624bea016680336a4d2d20b', function (error, response, body) {
+            var options = {
+                'method': 'POST',
+                'url': 'https://json.freeastrologyapi.com/complete-panchang',
+                'headers': {
+                  'Content-Type': 'application/json',
+                  'x-api-key': 'EhxLZ3Kkb44bnPn0tG3MY7305AXS1q1TeR1gAuv9'
+                },
+                body: JSON.stringify({
+                  "year": year,
+                  "month": date_ob.getMonth() + 1,
+                  "date": date_ob.getDate(),
+                  "hours": date_ob.getHours(),
+                  "minutes": date_ob.getMinutes(),
+                  "seconds": date_ob.getMinutes(),
+                  "latitude": 17.38333,
+                  "longitude": 78.4666,
+                  "timezone": 5.5,
+                  "config": {
+                    "observation_point": "topocentric",
+                    "ayanamsha": "lahiri"
+                  }
+                })
+              
+              };
+            request(options, function (error, response) {
+                res_body=JSON.parse(response.body);
+                res_body=JSON.parse(res_body.output);
+                let msg = {
+                    'reqdate': date,
+                    'tithi' : res_body?.tithi?.paksha + " " + res_body?.tithi?.name,
+                    'yoga' : res_body?.yoga["1"]?.name,
+                    'nakshatra' : res_body?.nakshatra?.name,
+                    'sunrise' : res_body?.sun_rise,
+                    'sunset' : res_body?.sun_set
+                }
+                console.log(res_body);
                 if(!error){ 
-                    res.status(200).json({success : true, message: body})
+                    res.status(200).json({success : true, message: JSON.stringify(msg)})
                 }
                 else{
                     res.status(200).json({success : true, message: error})
