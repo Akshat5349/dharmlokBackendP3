@@ -60,7 +60,7 @@ module.exports = {
           await instance.subscriptions
             .create({
               plan_id: req.body.plan_id,
-              total_count: 60,
+              total_count: 6,
             })
             .then((data) => {
               subscriptionDetails.subscription = data.id;

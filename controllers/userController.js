@@ -638,41 +638,24 @@ module.exports = {
             var year = date_ob.getFullYear();  
             var date = day + "/" + month + "/" + year;
             var options = {
-                'method': 'POST',
-                'url': 'https://json.freeastrologyapi.com/complete-panchang',
+                'method': 'GET',
+                'url': `https://api.vedicastroapi.com/v3-json/panchang/panchang?api_key=3cdc08d1-1a57-5ab6-b546-ee84db617ae1&date=${date}&tz=5.5&lat=19.0760&lon=72.8777&time=05:20&lang=en`,
                 'headers': {
                   'Content-Type': 'application/json',
-                  'x-api-key': 'EhxLZ3Kkb44bnPn0tG3MY7305AXS1q1TeR1gAuv9'
-                },
-                body: JSON.stringify({
-                  "year": year,
-                  "month": date_ob.getMonth() + 1,
-                  "date": date_ob.getDate(),
-                  "hours": date_ob.getHours(),
-                  "minutes": date_ob.getMinutes(),
-                  "seconds": date_ob.getMinutes(),
-                  "latitude": 17.38333,
-                  "longitude": 78.4666,
-                  "timezone": 5.5,
-                  "config": {
-                    "observation_point": "topocentric",
-                    "ayanamsha": "lahiri"
-                  }
-                })
-              
+                }
               };
             request(options, function (error, response) {
-                res_body=JSON.parse(response.body);
-                res_body=JSON.parse(res_body.output);
+                res_body=JSON.parse(response?.body);
+                // res_body=JSON.parse(res_body?.response);
+                console.log(res_body.response);
                 let msg = {
                     'reqdate': date,
-                    'tithi' : res_body?.tithi?.paksha + " " + res_body?.tithi?.name,
-                    'yoga' : res_body?.yoga["1"]?.name,
-                    'nakshatra' : res_body?.nakshatra?.name,
-                    'sunrise' : res_body?.sun_rise,
-                    'sunset' : res_body?.sun_set
+                    'tithi' : res_body?.response?.tithi?.type + " " + res_body?.response?.tithi?.name,
+                    'yoga' : res_body?.response?.yoga?.name,
+                    'nakshatra' : res_body?.response?.nakshatra?.name,
+                    'sunrise' : res_body?.response?.advanced_details?.sun_rise,
+                    'sunset' : res_body?.response?.advanced_details?.sun_set
                 }
-                console.log(res_body);
                 if(!error){ 
                     res.status(200).json({success : true, message: JSON.stringify(msg)})
                 }
