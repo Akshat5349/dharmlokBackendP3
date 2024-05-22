@@ -9,8 +9,9 @@ const orderModel = require('../models/orderModel');
 const vendorIncomeModel = require('../models/vendorIncomeModel');
 const creditModel = require('../models/creditModel');
 const bcrypt = require("bcryptjs");
-
+const axios = require("axios");
 var aws = require('aws-sdk');
+
 
 const awsConfig = { 
     accessKeyId: "AKIAYAR76KDVFMFGCW32",
@@ -633,36 +634,46 @@ module.exports = {
     getPanchang : async function(req, res){
         try{
             var date_ob = new Date();
-            var day = ("0" + date_ob.getDate()).slice(-2);
-            var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+            var day = date_ob.getDate();
+            var month = (date_ob.getMonth() + 1);
             var year = date_ob.getFullYear();  
             var date = day + "/" + month + "/" + year;
-            var options = {
-                'method': 'GET',
-                'url': `https://api.vedicastroapi.com/v3-json/panchang/panchang?api_key=3cdc08d1-1a57-5ab6-b546-ee84db617ae1&date=${date}&tz=5.5&lat=19.0760&lon=72.8777&time=05:20&lang=en`,
-                'headers': {
-                  'Content-Type': 'application/json',
-                }
-              };
-            request(options, function (error, response) {
-                res_body=JSON.parse(response?.body);
-                // res_body=JSON.parse(res_body?.response);
-                console.log(res_body.response);
-                let msg = {
-                    'reqdate': date,
-                    'tithi' : res_body?.response?.tithi?.type + " " + res_body?.response?.tithi?.name,
-                    'yoga' : res_body?.response?.yoga?.name,
-                    'nakshatra' : res_body?.response?.nakshatra?.name,
-                    'sunrise' : res_body?.response?.advanced_details?.sun_rise,
-                    'sunset' : res_body?.response?.advanced_details?.sun_set
-                }
-                if(!error){ 
-                    res.status(200).json({success : true, message: JSON.stringify(msg)})
-                }
-                else{
-                    res.status(200).json({success : true, message: error})
-                }
-            });
+            var body = JSON.stringify({
+                    "year" : year ,
+                    "month" : month ,
+                    "date" : day ,
+                    "hours" : 5 ,
+                    "minutes" : 30 ,
+                    "seconds" : 0,
+                    "latitude": 17.38333,
+                    "longitude": 78.4666,
+                    "timezone": 5.5,
+                    "config": {
+                    "observation_point": "topocentric",
+                    "ayanamsha": "lahiri"
+                    }
+                });
+              var promise1 = axios.post('https://json.freeastrologyapi.com/tithi-durations',body,{headers: {'Content-Type': 'application/json',
+            'x-api-key': 'EhxLZ3Kkb44bnPn0tG3MY7305AXS1q1TeR1gAuv9'}});
+              var promise2 = axios.post('https://json.freeastrologyapi.com/yoga-durations',body,{headers: {'Content-Type': 'application/json',
+            'x-api-key': 'EhxLZ3Kkb44bnPn0tG3MY7305AXS1q1TeR1gAuv9'}});
+              var promise3 = axios.post('https://json.freeastrologyapi.com/nakshatra-durations',body,{headers: {'Content-Type': 'application/json',
+            'x-api-key': 'EhxLZ3Kkb44bnPn0tG3MY7305AXS1q1TeR1gAuv9'}});
+            var promise4 =  axios.get('https://api.sunrisesunset.io/json?lat=17.38333&lng=78.4666')
+            Promise.all([promise1,promise2,promise3,promise4]).then(resp => {
+                console.log(resp[3]['data']['results']['sunrise']);
+                var msg = {
+                            'reqdate': date,
+                            'tithi' : JSON.parse(resp[0]['data']['output']).name + " " + JSON.parse(resp[0]['data']['output']).paksha,
+                            'yoga' : JSON.parse(resp[1]['data']['output'])[1].name,
+                            'nakshatra' : JSON.parse(resp[2]['data']['output']).name,
+                            'sunrise' : resp[3]['data']['results']['sunrise'],
+                            'sunset' : resp[3]['data']['results']['sunset']
+                        };
+                res.status(200).json({success : true, message: JSON.stringify(msg)});
+            }, err => {
+                res.status(200).json({success : true, message: err})
+            })
         }
         catch (error) {
             res.status(400).json({success : false,message: error.message})

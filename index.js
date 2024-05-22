@@ -110,6 +110,7 @@ io.on('connection',socket=>{
             }
     })
     socket.on('createRoom',async (data,callback)=>{
+        console.log("create Room Invoked");
         if(!roomList[data.room_id]){
             roomList[data.room_id] = new Room(data.room_id,data.title,data.description,data.user,worker,callback,socket.id)
             console.log(roomList)
@@ -120,6 +121,8 @@ io.on('connection',socket=>{
         }
     })
     socket.on('join',(id,callback)=>{
+        console.log(`User is trying to join the room with id : ${id}`)
+        console.log(`Room with id : ${roomList[id]}`)
         socket.room_id=id
         socket.join(id);
         callback(roomList[id]?true:false)
@@ -135,6 +138,7 @@ io.on('connection',socket=>{
             socket.join(id);
             callback(roomList[socket.room_id]?.getRTPCapabilities())
     })
+
     socket.on('getRTPCapabilities',(callback)=>{
         console.log(roomList[socket.room_id]?.getRTPCapabilities())
         callback(roomList[socket.room_id]?.getRTPCapabilities())

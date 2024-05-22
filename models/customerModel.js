@@ -12,7 +12,7 @@ const customerSchema = new mongoose.Schema({
 	phone : {
 		required: false,
 		type: String,
-		unique: true
+		// unique: true
 	},
 	email : {
 		required: false,

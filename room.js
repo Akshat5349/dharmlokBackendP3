@@ -54,11 +54,19 @@ module.exports=class Room{
         listenIps:[
           {
             // For local Servers
-            // ip: '127.0.0.1' 
+            ip: '127.0.0.1',  announcedIp : '10.0.2.2'
 
             // To stream on aws server
-            ip: '0.0.0.0' , announcedIp : '50.19.104.238'
-          }
+            // ip: '0.0.0.0' , announcedIp : '50.19.104.238'
+          },
+          // {
+          //   // For local Servers
+          //   ip: '127.0.0.1',  announcedIp : '10.0.2.2'
+
+          //   // To stream on aws server
+          //   // ip: '0.0.0.0' , announcedIp : '50.19.104.238'
+          // },
+
         ],
         enableUdp: true,
         enableTcp: true,
